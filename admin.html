@@ -1,1 +1,122 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOLDVK777 Admin Login</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:#090a0d;
+ color:white;
+ font-family:Arial,sans-serif;
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+}
+.login{
+ width:100%;
+ max-width:390px;
+ background:#17191f;
+ border:1px solid #80652f;
+ border-radius:18px;
+ padding:30px 22px;
+ box-shadow:0 10px 40px #000;
+}
+.logo{
+ text-align:center;
+ color:#e8bd58;
+ font-size:29px;
+ font-weight:900;
+ margin-bottom:8px;
+}
+.subtitle{
+ text-align:center;
+ color:#c9aa65;
+ font-size:12px;
+ letter-spacing:3px;
+ margin-bottom:30px;
+}
+h2{text-align:center;margin-bottom:25px}
+label{
+ display:block;
+ color:#d8bd8a;
+ margin:15px 0 8px;
+ font-size:14px;
+}
+input{
+ width:100%;
+ padding:14px;
+ border:1px solid #51452e;
+ border-radius:8px;
+ background:#25272e;
+ color:white;
+ outline:none;
+}
+button{
+ width:100%;
+ padding:15px;
+ background:#e8bd58;
+ color:#15110a;
+ font-weight:bold;
+ border:0;
+ border-radius:8px;
+ margin-top:23px;
+ font-size:15px;
+}
+.note{
+ text-align:center;
+ color:#999;
+ font-size:12px;
+ line-height:1.6;
+ margin-top:20px;
+}
+#message{
+ color:#e8bd58;
+ text-align:center;
+ margin-top:15px;
+ font-size:13px;
+}
+</style>
+</head>
+<body>
+
+<div class="login">
+ <div class="logo">👑 GOLDVK777</div>
+ <div class="subtitle">ADMINISTRATION PORTAL</div>
+
+ <h2>Admin Login</h2>
+
+ <form id="loginForm">
+  <label>Admin Email</label>
+  <input type="email" placeholder="Enter admin email" required>
+
+  <label>Password</label>
+  <input type="password" placeholder="Enter password" required>
+
+  <button type="submit">SECURE LOGIN →</button>
+ </form>
+
+ <div id="message"></div>
+
+ <div class="note">
+  Authorized Administration Only<br>
+  Secure server authentication required.
+ </div>
+</div>
+
+<script>
+document.getElementById("loginForm")
+.addEventListener("submit",function(e){
+ e.preventDefault();
+ document.getElementById("message").textContent =
+ "Backend authentication is not connected yet.";
+});
+</script>
+
+</body>
+</html>
+
