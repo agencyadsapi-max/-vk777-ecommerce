@@ -1,1 +1,246 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GOLDVK777 Admin Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#090a0d;color:#fff;font-family:Arial}
+header{background:#17191f;padding:20px;color:#e8bd58;
+font-size:23px;font-weight:bold;border-bottom:1px solid #65502b}
+main{max-width:850px;margin:auto;padding:16px}
+h2{color:#e8bd58;margin-bottom:15px}
+h3{margin-bottom:10px}
+nav{display:flex;gap:8px;overflow:auto;padding:12px;background:#15161b}
+button{border:0;padding:11px 14px;border-radius:7px;
+background:#e8bd58;color:#17120a;font-weight:bold;cursor:pointer}
+nav button{white-space:nowrap;background:#292b31;color:white}
+.panel{background:#191b21;border:1px solid #493c27;
+border-radius:12px;padding:18px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{background:#28251e;padding:17px;border-radius:10px}
+.number{font-size:25px;color:#e8bd58;font-weight:bold;margin-top:8px}
+input,select,textarea{width:100%;padding:12px;margin:8px 0;
+background:#25272e;color:white;border:1px solid #55472f;border-radius:7px}
+section{display:none}
+section.active{display:block}
+.muted{color:#aaa;font-size:13px;line-height:1.6}
+.item{padding:13px 0;border-bottom:1px solid #393939}
+img{max-width:180px;display:block;margin:12px 0;border-radius:8px}
+.small{font-size:12px;color:#aaa}
+</style>
+</head>
+<body>
+
+<header>👑 GOLDVK777 <span style="font-size:12px">ADMIN</span></header>
+
+<nav>
+<button onclick="page('home')">Overview</button>
+<button onclick="page('users')">Users</button>
+<button onclick="page('games')">Games</button>
+<button onclick="page('qr')">QR Image</button>
+<button onclick="page('rewards')">Rewards</button>
+<button onclick="page('support')">Support</button>
+<button onclick="page('audit')">Audit Logs</button>
+</nav>
+
+<main>
+
+<section id="home" class="active">
+<div class="panel">
+<h2>Admin Dashboard</h2>
+<p class="muted">Welcome to GOLDVK777 Management</p>
+</div>
+<div class="grid">
+<div class="stat">Total Users<div class="number" id="userCount">0</div></div>
+<div class="stat">Active Games<div class="number" id="gameCount">2</div></div>
+<div class="stat">Reward Requests<div class="number" id="rewardCount">0</div></div>
+<div class="stat">Audit Events<div class="number" id="auditCount">0</div></div>
+</div>
+<div class="panel" style="margin-top:15px">
+<h2>Quick Management</h2>
+<p class="muted">Manage your free-play gaming interface.</p>
+</div>
+</section>
+
+<section id="users">
+<div class="panel">
+<h2>User Management</h2>
+<input id="newUser" placeholder="Enter display name">
+<button onclick="addUser()">ADD USER</button>
+<div id="userList"></div>
+</div>
+</section>
+
+<section id="games">
+<div class="panel">
+<h2>Game Management</h2>
+<div class="item">
+<h3>✈️ Sky Rush</h3>
+<p class="muted">Free-play multiplier game</p>
+<select id="skyStatus">
+<option value="ON">Enabled</option>
+<option value="OFF">Disabled</option>
+</select>
+</div>
+<div class="item">
+<h3>🎯 Lucky Target</h3>
+<p class="muted">Free-play game</p>
+<select id="targetStatus">
+<option value="ON">Enabled</option>
+<option value="OFF">Disabled</option>
+</select>
+</div>
+<button onclick="saveGames()">SAVE SETTINGS</button>
+<p id="gameMsg" class="muted"></p>
+<p class="muted">Game results are automatically generated and historical results cannot be edited.</p>
+</div>
+</section>
+
+<section id="qr">
+<div class="panel">
+<h2>Sample QR Image Manager</h2>
+<p class="muted">Upload a dummy image for interface preview only. This is not a payment QR system.</p>
+<input type="file" id="qrFile" accept="image/*">
+<img id="qrPreview" alt="Sample image preview">
+<button onclick="removeQR()">REMOVE IMAGE</button>
+</div>
+</section>
+
+<section id="rewards">
+<div class="panel">
+<h2>Reward Requests</h2>
+<p class="muted">Review requests for free, non-cash play points.</p>
+<input id="rewardName" placeholder="User display name">
+<input id="rewardPoints" type="number" placeholder="Reward points">
+<button onclick="addReward()">SUBMIT REQUEST</button>
+<div id="rewardList"></div>
+</div>
+</section>
+
+<section id="support">
+<div class="panel">
+<h2>Customer Support</h2>
+<input id="supportName" placeholder="Customer name">
+<textarea id="supportText" placeholder="Customer message"></textarea>
+<button onclick="addTicket()">CREATE TICKET</button>
+<div id="tickets"></div>
+</div>
+</section>
+
+<section id="audit">
+<div class="panel">
+<h2>Activity & Audit History</h2>
+<p class="muted">Actions recorded in this browser session.</p>
+<div id="logs"></div>
+</div>
+</section>
+
+</main>
+
+<script>
+let users=[];
+let rewards=[];
+let tickets=[];
+let logs=[];
+
+function page(id){
+document.querySelectorAll('main section').forEach(x=>x.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+function logAction(action){
+logs.unshift(new Date().toLocaleString()+' — '+action);
+document.getElementById('logs').innerHTML=logs.map(x=>
+'<div class="item">'+x+'</div>').join('');
+document.getElementById('auditCount').textContent=logs.length;
+}
+
+function addUser(){
+let name=document.getElementById('newUser').value.trim();
+if(!name)return;
+users.push(name);
+document.getElementById('userList').innerHTML=users.map((u,i)=>
+'<div class="item">'+u+' <button onclick="removeUser('+i+')">REMOVE</button></div>').join('');
+document.getElementById('newUser').value='';
+document.getElementById('userCount').textContent=users.length;
+logAction('User added: '+name);
+}
+
+function removeUser(i){
+let name=users[i];
+users.splice(i,1);
+document.getElementById('userCount').textContent=users.length;
+document.getElementById('userList').innerHTML=users.map((u,j)=>
+'<div class="item">'+u+' <button onclick="removeUser('+j+')">REMOVE</button></div>').join('');
+logAction('User removed: '+name);
+}
+
+function saveGames(){
+let a=document.getElementById('skyStatus').value;
+let b=document.getElementById('targetStatus').value;
+document.getElementById('gameCount').textContent=(a==='ON'?1:0)+(b==='ON'?1:0);
+document.getElementById('gameMsg').textContent='Settings updated in this browser.';
+logAction('Game visibility settings changed');
+}
+
+document.getElementById('qrFile').addEventListener('change',function(e){
+let file=e.target.files[0];
+if(!file)return;
+if(!file.type.startsWith('image/'))return alert('Select an image');
+let reader=new FileReader();
+reader.onload=function(){
+document.getElementById('qrPreview').src=reader.result;
+logAction('Sample image uploaded');
+};
+reader.readAsDataURL(file);
+});
+
+function removeQR(){
+document.getElementById('qrPreview').removeAttribute('src');
+document.getElementById('qrFile').value='';
+logAction('Sample image removed');
+}
+
+function addReward(){
+let name=document.getElementById('rewardName').value.trim();
+let amount=Number(document.getElementById('rewardPoints').value);
+if(!name||!Number.isInteger(amount)||amount<=0)return alert('Enter valid details');
+rewards.push({name,amount,status:'Pending'});
+renderRewards();
+document.getElementById('rewardCount').textContent=rewards.filter(x=>x.status==='Pending').length;
+logAction('Reward request submitted for '+name);
+}
+
+function renderRewards(){
+document.getElementById('rewardList').innerHTML=rewards.map((r,i)=>
+'<div class="item"><b>'+r.name+'</b> — '+r.amount+' points — '+r.status+
+(r.status==='Pending'?
+' <button onclick="reviewReward('+i+',true)">APPROVE</button> <button onclick="reviewReward('+i+',false)">REJECT</button>':'')+'</div>').join('');
+}
+
+function reviewReward(i,approved){
+rewards[i].status=approved?'Approved':'Rejected';
+renderRewards();
+document.getElementById('rewardCount').textContent=rewards.filter(x=>x.status==='Pending').length;
+logAction('Reward request '+rewards[i].status+': '+rewards[i].name);
+}
+
+function addTicket(){
+let name=document.getElementById('supportName').value.trim();
+let message=document.getElementById('supportText').value.trim();
+if(!name||!message)return alert('Fill both fields');
+tickets.push({name,message});
+document.getElementById('tickets').innerHTML=tickets.map(t=>
+'<div class="item"><b>'+t.name+'</b><p>'+t.message+'</p></div>').join('');
+logAction('Support ticket created by '+name);
+}
+
+logAction('Dashboard opened');
+</script>
+
+</body>
+</html>
+
